@@ -1,5 +1,5 @@
 const sequelize = require('./database');
-const { User } = require('../models/User');
+const { User } = require('../models/user.model');
 
 const sync_database = async () => {
     try {
