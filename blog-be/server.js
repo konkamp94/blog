@@ -15,6 +15,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/user', require('./routes/users.routes'))
 app.use('/api/auth', require('./routes/auth.routes'))
+app.use('/api/post', require('./routes/posts.routes'))
 // Error handling
 app.use(errorLogger)
 app.use(errorHandling)
