@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import Login from './pages/login';
 import Layout from './Layout';
 import Posts from './pages/posts';
-
+import Post from './pages/post';
 function App() {
 
   return (
@@ -17,7 +17,7 @@ function App() {
           <Route index element={<Navigate to='/blog' />} />
           <Route path="/blog" element={<h1>page 1</h1>} />
           <Route path="/blog/posts" element={<Posts/>} />
-          <Route path="/blog/post/:id" element={<h1>page 3</h1>}/>
+          <Route path="/blog/post/:id" element={<Post/>}/>
           <Route path="*" element={<Navigate to='/blog' />} />
         </Route>
       </Routes>

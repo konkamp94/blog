@@ -1,13 +1,13 @@
 import Alert from 'react-bootstrap/Alert';
 
-const Error = (props) => {
+const ErrorAlert = ({errorMessage}) => {
 
     return (
         <Alert variant='danger' className='mt-3'>
-            {props.message}
+            {errorMessage}
         </Alert>
     )
 
 }
 
-export default Error;
+export default ErrorAlert;

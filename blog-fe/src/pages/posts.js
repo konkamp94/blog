@@ -6,35 +6,33 @@ import { useContext } from "react"
 import { Container, Row, Col } from "react-bootstrap"
 import CenteredSpinner from "../components/spinner"
 import PostInList from "../components/postInList"
-import Error from "../components/error"
+import CustomPagination from "../components/customPagination"
+import useApiErrorHandling from "../hooks/useApiErrorHandling"
+import ErrorAlert from "../components/errorAlert"
+
 
 const Posts = () => {
     const [posts, setPosts] = useState([])
     const [page, setPage] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
-    const { logout } = useContext(authContext)
-    const navigate = useNavigate()
+    const [error, handleApiError] = useApiErrorHandling()
     const pageSize = 12
 
     useEffect(() => {
+        window.scrollTo(0, 0)
         const getPosts = async () => {
+            setLoading(true)
             try {
                 let response = await postService.getPosts(page, pageSize)
                 setPosts(response.data.rows)
-                setTotalPages(Math.ceil(response.data.count / pageSize))
+                setTotalPages(Math.floor(response.data.count / pageSize))
                 setLoading(false)
             } catch(error) {
-                if(error.response.status === 401) {
-                    logout()
-                    navigate('/login')
-                } else if(error.response.status === 500) {
-                    setLoading(false)
-                    setError('Something went wrong, please try again later')
-                    console.log('Something went wrong, please try again later')
-                }
+                console.log(error)
+                handleApiError(error)
             }
+            setLoading(false)
         }
         getPosts()
     }, [page])
@@ -50,6 +48,11 @@ const Posts = () => {
                                 </Col>)
                         })}
                     </Row>
+                    <Row>
+                        <Col className='d-flex justify-content-center align-items-center'>
+                            <CustomPagination totalPages={totalPages} currentPage={page} setCurrentPage={setPage}/>
+                        </Col>
+                    </Row>
                 </>
             )
     }
@@ -58,6 +61,8 @@ const Posts = () => {
         <>  
         <Container>
                 <h1 style={{textAlign: 'left'}}>Posts</h1>
+                {console.log(error)}
+                {error && <ErrorAlert errorMessage={error}/>}
                 {!loading ? showPosts() : <CenteredSpinner/>}
         </Container>
         </>

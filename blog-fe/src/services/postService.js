@@ -18,6 +18,11 @@ class PostService {
         return response
     }
 
+    getPost = async (id) => {
+        let response = await axiosInstance.get(`/post/${id}`, {headers: createAuthHeaders()});
+        return response
+    }
+
 }
 
 export default PostService.getInstance();
