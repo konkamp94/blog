@@ -3,7 +3,9 @@ import postService from "../services/postService"
 import { useNavigate } from "react-router-dom"
 import { authContext } from "../context/authContext"
 import { useContext } from "react"
+import { Container, Row, Col } from "react-bootstrap"
 import CenteredSpinner from "../components/spinner"
+import PostInList from "../components/postInList"
 import Error from "../components/error"
 
 const Posts = () => {
@@ -14,7 +16,7 @@ const Posts = () => {
     const [error, setError] = useState(null)
     const { logout } = useContext(authContext)
     const navigate = useNavigate()
-    const pageSize = 10
+    const pageSize = 12
 
     useEffect(() => {
         const getPosts = async () => {
@@ -22,7 +24,7 @@ const Posts = () => {
                 let response = await postService.getPosts(page, pageSize)
                 setPosts(response.data.rows)
                 setTotalPages(Math.ceil(response.data.count / pageSize))
-                // setLoading(false)
+                setLoading(false)
             } catch(error) {
                 if(error.response.status === 401) {
                     logout()
@@ -38,21 +40,26 @@ const Posts = () => {
     }, [page])
 
     const showPosts = () => {
-        return (<>
-                    {posts.map(post => {
-                        return <div key={post.id}>
-                                <div>{post.title}</div>
-                                <div>{post.author}</div>
-                                <div>{post.body}</div>
-                               </div>
-                    })}
+        return (<>  
+                    <Row>
+                        {posts.map(post => {
+                            
+                            return (
+                                <Col sm={6} md={3} lg={3} className='d-flex justify-content-center align-items-stretch p-2'>
+                                    <PostInList key={post.id} post={post}/>
+                                </Col>)
+                        })}
+                    </Row>
                 </>
             )
     }
 
     return (
-        <>
-            {!loading ? showPosts() : <CenteredSpinner/>}
+        <>  
+        <Container>
+                <h1 style={{textAlign: 'left'}}>Posts</h1>
+                {!loading ? showPosts() : <CenteredSpinner/>}
+        </Container>
         </>
     )
 }
