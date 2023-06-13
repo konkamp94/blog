@@ -1,11 +1,15 @@
 const express = require('express');
 const app = express();
+const cors = require('cors')
 const port = process.env.PORT || 3001;
 const sync_database = require('./config/sync_database');
 const { errorHandling, errorLogger } = require('./middlewares/error_handling');
 require('dotenv').config()
 
 sync_database();
+
+app.use(cors())
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
