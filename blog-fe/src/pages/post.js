@@ -20,6 +20,7 @@ const Post = () => {
             try {
                 const response = await postService.getPost(id)
                 setPost(response.data)
+                setLiked(response.data.likedByUser)
             } catch (error) {
                 handleApiError(error)
             }
@@ -29,7 +30,12 @@ const Post = () => {
     }, [])
 
     const onClickStar = () => {
-        console.log('clicked')
+        setLiked(!liked)
+        // try {
+
+        // } catch (error) {
+        //     handleApiError(error)
+        // }
     }
 
     const postLayout = () => {
@@ -39,7 +45,9 @@ const Post = () => {
                     <Card.Body>
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <Card.Title>{post.title}</Card.Title>
-                      <i class="bi bi-star" onClick={onClickStar}></i>
+                      {liked ? <i class="bi bi-star-fill" onClick={onClickStar}></i> 
+                             : <i class="bi bi-star" onClick={onClickStar}></i>
+                      }
                     </div>
                       <Card.Subtitle className="mb-2 text-muted" style={{textAlign: 'left'}}>
                         Published on {moment(post.createdAt).format('MMMM Do YYYY')} by {post.author}
@@ -56,6 +64,7 @@ const Post = () => {
                       </Card.Text>
                     </Card.Body>
                   </Card>
+                  <h3 className="mt-4" style={{textAlign: 'left'}}>Comments</h3>
                   {
                     post.comments.map(comment => {
                         return <Comment name={comment.name} 

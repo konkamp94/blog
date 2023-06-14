@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import postService from "../services/postService"
-import { useNavigate } from "react-router-dom"
+import userService from "../services/userService"
 import { authContext } from "../context/authContext"
 import { useContext } from "react"
 import { Container, Row, Col } from "react-bootstrap"
@@ -11,12 +11,13 @@ import useApiErrorHandling from "../hooks/useApiErrorHandling"
 import ErrorAlert from "../components/errorAlert"
 
 
-const Posts = () => {
+const Posts = ({favouritePage=false}) => {
     const [posts, setPosts] = useState([])
     const [page, setPage] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
     const [loading, setLoading] = useState(true)
     const [error, handleApiError] = useApiErrorHandling()
+    const { user } = useContext(authContext)
     const pageSize = 12
 
     useEffect(() => {
@@ -24,7 +25,8 @@ const Posts = () => {
         const getPosts = async () => {
             setLoading(true)
             try {
-                let response = await postService.getPosts(page, pageSize)
+                let response = !favouritePage ? await postService.getPosts(page, pageSize)
+                                              : await userService.getFavouritePosts(user.id, page, pageSize)
                 setPosts(response.data.rows)
                 setTotalPages(Math.floor(response.data.count / pageSize))
                 setLoading(false)
@@ -61,7 +63,6 @@ const Posts = () => {
         <>  
         <Container>
                 <h1 style={{textAlign: 'left'}}>Posts</h1>
-                {console.log(error)}
                 {error && <ErrorAlert errorMessage={error}/>}
                 {!loading ? showPosts() : <CenteredSpinner/>}
         </Container>

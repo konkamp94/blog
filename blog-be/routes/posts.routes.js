@@ -10,7 +10,15 @@ const authenticateToken = require('../middlewares/auth');
 router.get('/', authenticateToken, async (req, res, next) => {
     try {
         const { page, size } = req.query;
-        const posts = await Post.findAndCountAll({limit: size, offset: page * size});
+        const posts = await Post.findAndCountAll({limit: size, 
+                                                  offset: page * size,
+                                                  include: [{model: User, as: 'usersLiked', where: {id: req.user.id}, required:false, attributes: ['id']}]
+                                                });
+        posts.rows.map(post => {
+            post.dataValues.usersLiked.length > 0 ? post.dataValues.likedByUser = true : post.dataValues.likedByUser = false;
+            delete post.dataValues.usersLiked
+            return post
+        })
         res.json(posts)
     } catch(err) {
         next(err)
@@ -19,10 +27,16 @@ router.get('/', authenticateToken, async (req, res, next) => {
 
 router.get('/:id', authenticateToken, async (req, res, next) => {
     try {
-        const post = await Post.findByPk(req.params.id);
+        const post = await Post.findOne({
+            where: {id: req.params.id},
+            include: [{model: User, as: 'usersLiked', where: {id: req.user.id}, required:false, attributes: ['id']}]
+        });
+
         if(!post) { const error = new Error('Post not found'); error.status = 404; throw error; }
         const comments = await Comment.findAll({where: {jsonPlaceholderPostId: post.jsonPlaceholderId}});
         post.dataValues.comments = comments;
+        post.dataValues.usersLiked.length > 0 ? post.dataValues.likedByUser = true : post.dataValues.likedByUser = false;
+        delete post.dataValues.usersLiked
         res.json(post)
     } catch(err) {
         next(err)

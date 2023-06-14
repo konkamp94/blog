@@ -1,9 +1,6 @@
 import { axiosInstance, createAuthHeaders } from "./axiosConfig";
 
 class PostService {
-    apiBaseUrl = process.env.NODE_ENV === 'development'
-                 ? process.env.REACT_APP_API_BASE_URL_DEV
-                 : process.env.REACT_APP_API_BASE_URL_PRODUCTION;
     instance = null;
     
     static getInstance = () => {
@@ -13,13 +10,18 @@ class PostService {
         return this.instance;
     }
 
-    getPosts = async (page, size=10) => {
+    getPosts = async (page, size=12) => {
         let response = await axiosInstance.get(`/post/?page=${page}&size=${size}`, {headers: createAuthHeaders()});
         return response
     }
 
     getPost = async (id) => {
         let response = await axiosInstance.get(`/post/${id}`, {headers: createAuthHeaders()});
+        return response
+    }
+
+    createFavouritePosts = async (userId, postIds) => {
+        let response = await axiosInstance.post(`/post/user/${userId}/favourite`, {postIds}, {headers: createAuthHeaders()});
         return response
     }
 
