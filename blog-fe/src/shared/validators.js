@@ -11,8 +11,6 @@ const validateEmail = (email) => {
   const validatePassword = (password) => {
     if(!password) {
         return {message: 'Password is required', isValid: false};
-    } else if(password.length < 8) {
-        return {message: 'Password must be at least 8 characters', isValid: false};
     }
     return {message: null, isValid: true};
   }
