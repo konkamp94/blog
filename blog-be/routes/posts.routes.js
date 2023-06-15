@@ -12,7 +12,8 @@ router.get('/', authenticateToken, async (req, res, next) => {
         const { page, size } = req.query;
         const posts = await Post.findAndCountAll({limit: size, 
                                                   offset: page * size,
-                                                  include: [{model: User, as: 'usersLiked', where: {id: req.user.id}, required:false, attributes: ['id']}]
+                                                  include: [{model: User, as: 'usersLiked', where: {id: req.user.id}, required:false, attributes: ['id']}],
+                                                  order: [["createdAt", "DESC"]]
                                                 });
         posts.rows.map(post => {
             post.dataValues.usersLiked.length > 0 ? post.dataValues.likedByUser = true : post.dataValues.likedByUser = false;

@@ -4,6 +4,7 @@ const { createUser } = require('../services/users.service');
 const authenticateToken = require('../middlewares/auth');
 const User = require('../models/user.model');
 const router = express.Router();
+const sequelize = require('sequelize');
 
 router.post('/', requiredFields(['email', 'password', 'firstname', 'lastname']), 
     async (req, res, next) => {
@@ -25,7 +26,9 @@ router.get('/:userId/get-favourite-posts', authenticateToken, async (req, res, n
 
         const user = await User.findByPk(req.params.userId);
         if(!user) { const error = new Error('User not found'); error.status = 404; throw error; }
-        const favouritePosts = await user.getFavoritePosts({limit: size, offset: page * size});
+        const favouritePosts = await user.getFavoritePosts({limit: size, offset: page * size, 
+                                                            order: [[sequelize.literal('"UserPostFavorite"."createdAt"'), 'DESC']],
+                                                          });
         const countFavouritePosts = await user.countFavoritePosts();
         // to use it in the frontend as in posts
         favouritePosts.forEach(post => post.dataValues.likedByUser = true);
