@@ -20,8 +20,8 @@ class PostService {
         return response
     }
 
-    createFavouritePosts = async (userId, postIds) => {
-        let response = await axiosInstance.post(`/post/user/${userId}/favourite`, {postIds}, {headers: createAuthHeaders()});
+    addOrRemoveFavouritePosts = async (userId, postIds, like) => {
+        let response = await axiosInstance.post(`/post/user/${userId}/favourite/?like=${like}`, {postIds}, {headers: createAuthHeaders()});
         return response
     }
 

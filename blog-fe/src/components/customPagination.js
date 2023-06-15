@@ -11,11 +11,14 @@ const CustomPagination = ({totalPages, currentPage, setCurrentPage}) => {
     }
 
     return (
-        <Pagination>
-            <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 0}/>
-            {pages}
-            <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === (totalPages - 1)}/>
-        </Pagination>
+        <>
+        {totalPages === 0 ? null :
+            <Pagination>
+                <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 0}/>
+                {pages}
+                <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === (totalPages - 1)}/>
+            </Pagination>}
+        </>
     )
 }
 

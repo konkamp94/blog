@@ -9,13 +9,14 @@ const useApiErrorHandling = () => {
     const navigate = useNavigate()
 
     const handleApiError = (error) => {
-        if(error.response.status === 401) {
+        if(error?.response?.status === 401) {
             logout()
             navigate('/login')
-        } else if(error.response.status === 500) {
+        } else if(error?.response?.status === 500) {
             setError('Something went wrong, please try again later')
         } else {
-            setError(error.response.data.message)
+            error.response ? setError(error.response.data.message) 
+                           : setError('Check your internet connection')
         }
     }
 

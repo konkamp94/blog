@@ -17,6 +17,7 @@ function App() {
           <Route index element={<Navigate to='/blog' />} />
           <Route path="/blog" element={<h1>page 1</h1>} />
           <Route path="/blog/posts" element={<Posts/>} />
+          <Route path="/blog/favourite-posts" element={<Posts/>} />
           <Route path="/blog/post/:id" element={<Post/>}/>
           <Route path="*" element={<Navigate to='/blog' />} />
         </Route>

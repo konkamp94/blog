@@ -27,7 +27,8 @@ router.get('/:userId/get-favourite-posts', authenticateToken, async (req, res, n
         if(!user) { const error = new Error('User not found'); error.status = 404; throw error; }
         const favouritePosts = await user.getFavoritePosts({limit: size, offset: page * size});
         const countFavouritePosts = await user.countFavoritePosts();
-
+        // to use it in the frontend as in posts
+        favouritePosts.forEach(post => post.dataValues.likedByUser = true);
         res.json({count: countFavouritePosts, rows: favouritePosts})
     } catch(err) {
         next(err)

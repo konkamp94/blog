@@ -24,7 +24,7 @@ const Header = () => {
           <Nav className="me-auto">
             <Nav.Link onClick={() => navigate('/blog')}>Home</Nav.Link>
             <Nav.Link onClick={() => navigate('/blog/posts')}>Posts</Nav.Link>
-            <Nav.Link>Favorites</Nav.Link>
+            <Nav.Link onClick={() => navigate('/blog/favourite-posts')}>Favourite Posts</Nav.Link>
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">

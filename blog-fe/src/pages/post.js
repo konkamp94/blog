@@ -1,18 +1,21 @@
 import { useContext, useEffect, useState } from "react"
 import { authContext } from "../context/authContext"
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import postService from "../services/postService"
 import ErrorAlert from "../components/errorAlert"
 import Comment from "../components/comment"
 import CustomSpinner from "../components/spinner"
+import Spinner from 'react-bootstrap/Spinner';
 import useApiErrorHandling from "../hooks/useApiErrorHandling"
-import { Container, Row, Col, Card, Badge } from 'react-bootstrap';
+import { Container, Card } from 'react-bootstrap';
 import moment from 'moment';
 const Post = () => {
     const { id } = useParams()
+    const { getUser } = useContext(authContext)
     const [post, setPost] = useState(null)
     const [loading, setLoading] = useState(true)
-    const [liked, setLiked] = useState(false)
+    const [likeLoading, setLikeLoading] = useState(false)
+    const [liked, setLiked] = useState(null)
     const [error, handleApiError] = useApiErrorHandling()
 
     useEffect(() => {
@@ -22,6 +25,7 @@ const Post = () => {
                 setPost(response.data)
                 setLiked(response.data.likedByUser)
             } catch (error) {
+                setLoading(false)
                 handleApiError(error)
             }
             setLoading(false)
@@ -29,13 +33,15 @@ const Post = () => {
         getPost()
     }, [])
 
-    const onClickStar = () => {
+    const onClickStar = async () => {
+      setLikeLoading(true)
+      try{
+        await postService.addOrRemoveFavouritePosts(getUser().id, [post.id], !liked)
         setLiked(!liked)
-        // try {
-
-        // } catch (error) {
-        //     handleApiError(error)
-        // }
+      } catch(error) {
+        handleApiError(error)
+      }
+      setLikeLoading(false)
     }
 
     const postLayout = () => {
@@ -45,9 +51,9 @@ const Post = () => {
                     <Card.Body>
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <Card.Title>{post.title}</Card.Title>
-                      {liked ? <i class="bi bi-star-fill" onClick={onClickStar}></i> 
-                             : <i class="bi bi-star" onClick={onClickStar}></i>
-                      }
+                      {likeLoading ? <Spinner animation="border" size="sm"></Spinner> 
+                           : liked ? <i style={{cursor: 'pointer'}}class="bi bi-star-fill" onClick={()=>onClickStar()}></i> 
+                                   : <i style={{cursor: 'pointer'}} class="bi bi-star" onClick={()=>onClickStar()}></i>}
                     </div>
                       <Card.Subtitle className="mb-2 text-muted" style={{textAlign: 'left'}}>
                         Published on {moment(post.createdAt).format('MMMM Do YYYY')} by {post.author}
@@ -81,7 +87,7 @@ const Post = () => {
     return (
         <>  
             {error && <ErrorAlert message={error} />}
-            {!loading ? postLayout() : <CustomSpinner />}
+            {!loading && !error? postLayout() : !error ? <CustomSpinner /> : null}
         </>
     )
 }
