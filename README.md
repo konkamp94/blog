@@ -19,7 +19,7 @@ run "npm start" to start the react app
 the react app will automatically open in your default browser on port 3000
 
 #IMPORTANT
-Because i dont have implement a register page you only have to create a user in the database manually
+Because i haven't implemented a register page you only have to create a user in the database manually
 with the api endpoint. You ll need to call the api endpoint with a tool like postman or in command line with curl
 
 http://localhost:3001/api/user/
