@@ -19,17 +19,16 @@ run "npm start" to start the react app
 the react app will automatically open in your default browser on port 3000
 
 #IMPORTANT
-Because i haven't implemented a register page you only have to create a user in the database manually
-with the api endpoint. You ll need to call the api endpoint with a tool like postman or in command line with curl
+Because I haven't implemented a register page yet, you have to create a user in the database manually
+with the api endpoint. 
 
-http://localhost:3001/api/user/
+POST http://localhost:3001/api/user/
+example body:
 body: {
-    "email": "kkampourelis@email.com",
-    "password": "kkampourelis",
-    "firstname: "Kostantinos",
-    "lastname": "Kampourelis"
+    "email": "blog_user@email.com",
+    "password": "password",
+    "firstname: "first name",
+    "lastname": "last name"
 }
 
 once you have created a user you can login with his credentials and start using the app
-
-Feel free to contact me if you have any questions or problems running the app
